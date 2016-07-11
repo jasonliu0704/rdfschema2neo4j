@@ -2,7 +2,7 @@ import sparql
 from neo4j.v1 import GraphDatabase, basic_auth
 from urlparse import urlparse
 
-driver = GraphDatabase.driver("bolt://localhost", auth=basic_auth("neo4j", "dba"))
+driver = GraphDatabase.driver("bolt://localhost:7474", auth=basic_auth("neo4j", "19950704"))
 
 session = driver.session()
 
@@ -24,7 +24,7 @@ for row in result:
     values = sparql.unpack_row(row)
     count = values[0]
 
-print 'number of types '+str(count)
+print ('number of types '+str(count))
 
 types = []
 
@@ -88,11 +88,11 @@ for x in range(0, count, 100):
                 relatedTypeLabel = getLabel(relatedType)
                 for relatedTypeCountRow in relatedTypeCountResult:
                     tripleCount = sparql.unpack_row(relatedTypeCountRow)[0]
-                    print type + ' -> ' + predicate + ' -> ' + relatedType + ' ' + str(tripleCount)
+                    print (type + ' -> ' + predicate + ' -> ' + relatedType + ' ' + str(tripleCount))
                     createCypher(type, typeLabel, predicate, predicateLabel, relatedType, relatedTypeLabel,
                                      tripleCount, False)
             if not hasResult:
-                print type+' -> '+predicate+' -> LITERAL'
+                print (type+' -> '+predicate+' -> LITERAL')
                 createCypher(type, typeLabel, predicate, predicateLabel,  '', '', '', True)
 
 session.close()
